@@ -1,0 +1,52 @@
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+
+# Output of go build
+/build/
+/bin/
+/dist/
+
+# Dependency directories (vendor for legacy projects)
+/vendor/
+
+# Go workspace file (Go 1.18+)
+go.work
+go.work.sum
+
+# Go module files (only if you want to exclude them — generally you keep these)
+# go.mod
+# go.sum
+
+# IDE/editor settings
+.idea/
+.vscode/
+*.swp
+
+# Logs
+*.log
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# Environment files
+.env
+.env.*
+
+# Migration files (optional - exclude compiled or temp SQLs, not source)
+migrations/*.tmp
+migrations/*.log
+
+# Test and coverage files
+*.coverprofile
+*.test
+coverage.out
+
+# Git configuration
+.gitconfig.local
