@@ -1,0 +1,369 @@
+basePath: /
+definitions:
+  models.CreatePlayerRequest:
+    properties:
+      account_balance:
+        type: number
+      email:
+        type: string
+      name:
+        type: string
+    type: object
+  models.CreatePrizeRequest:
+    properties:
+      placement:
+        type: integer
+      playerId:
+        type: string
+      tournamentId:
+        type: string
+    type: object
+  models.CreateTournamentRequest:
+    properties:
+      endDate:
+        type: string
+      name:
+        type: string
+      prize_pool:
+        type: number
+      startDate:
+        type: string
+    type: object
+  models.Player:
+    properties:
+      accountBalance:
+        type: number
+      email:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+    type: object
+  models.Prize:
+    properties:
+      id:
+        type: string
+      placement:
+        type: integer
+      playerId:
+        type: string
+      tournamentId:
+        type: string
+    type: object
+  models.RankedPlayer:
+    properties:
+      accountBalance:
+        type: number
+      email:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      rank:
+        type: integer
+    type: object
+  models.Tournament:
+    properties:
+      endDate:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      prizePool:
+        type: number
+      startDate:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  description: Test project for an iGaming platform
+  title: Vyking Project API
+  version: "1.0"
+paths:
+  /api/players:
+    get:
+      description: Retrieves a list of all players
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Player'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get all players
+      tags:
+      - Players
+    post:
+      consumes:
+      - application/json
+      description: Adds a new player to the system
+      parameters:
+      - description: Player data
+        in: body
+        name: player
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreatePlayerRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.CreatePlayerRequest'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Create a new player
+      tags:
+      - Players
+  /api/players/{id}:
+    delete:
+      description: Deletes a player by their unique ID
+      parameters:
+      - description: Player ID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Delete a player
+      tags:
+      - Players
+    get:
+      description: Retrieves a player by their unique ID
+      parameters:
+      - description: Player ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Player'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get a player by ID
+      tags:
+      - Players
+  /api/players/ranking:
+    get:
+      description: Retrieves players ordered by tournament ranking
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.RankedPlayer'
+            type: array
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get players sorted by ranking
+      tags:
+      - Players
+  /api/prizes:
+    post:
+      description: Creates prize with placement in mind
+      parameters:
+      - description: Player data
+        in: body
+        name: player
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreatePrizeRequest'
+      responses:
+        "204":
+          description: No Content
+          schema:
+            $ref: '#/definitions/models.Prize'
+        "500":
+          description: Error creating prize
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Create prize that references the tournament and the player's placement
+      tags:
+      - Prizes
+  /api/prizes/distribute/{id}:
+    put:
+      description: Distributes tournament prizes to the top 3 people placed
+      parameters:
+      - description: Tournament ID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "204":
+          description: No Content
+        "500":
+          description: Error distributing prizes
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Distribute tournament prizes
+      tags:
+      - Prizes
+  /api/tournaments:
+    get:
+      description: Retrieves a list of all tournaments
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Tournament'
+            type: array
+        "500":
+          description: Database error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get all tournaments
+      tags:
+      - Tournaments
+    post:
+      consumes:
+      - application/json
+      description: Adds a new tournament to the system
+      parameters:
+      - description: Tournament data
+        in: body
+        name: tournament
+        required: true
+        schema:
+          $ref: '#/definitions/models.CreateTournamentRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Tournament'
+        "400":
+          description: Invalid input
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Database error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Create a new tournament
+      tags:
+      - Tournaments
+  /api/tournaments/{id}:
+    delete:
+      description: Deletes a tournament from the system
+      parameters:
+      - description: Tournament ID
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Invalid ID format
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Error deleting tournament
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Delete a tournament by ID
+      tags:
+      - Tournaments
+    get:
+      description: Retrieves a tournament by its UUID
+      parameters:
+      - description: Tournament ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Tournament'
+        "400":
+          description: Invalid ID format
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Tournament not found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get a tournament by ID
+      tags:
+      - Tournaments
+swagger: "2.0"
